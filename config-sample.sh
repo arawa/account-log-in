@@ -1,0 +1,4 @@
+#!/bin/bash
+PATH_NEXTCLOUD=""
+USER_WEB=""
+NUMBER_DAYS_TO_CHECK=""
