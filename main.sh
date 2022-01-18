@@ -31,6 +31,10 @@ done
 declare -A USERS_ARE_INACTIVES
 DATE_LIMIT=$(date -d "-$NUMBER_DAYS_TO_CHECK days" +%s)
 for USER in "${!USERS_WITH_DATE[@]}"; do
+    # ingore admin account
+    if [[ $USER == 'admin' ]]; then
+        continue
+    fi
     FORMAT_DATE=$(date -d ${USERS_WITH_DATE[$USER]} +%s)
     if [[ $DATE_LIMIT -gt $FORMAT_DATE ]]; then
         echo "$USER is inactive from ${USERS_WITH_DATE[$USER]}"
