@@ -29,6 +29,8 @@ for FILE_DISABLED_USERS in ${FILES_DISABLED_USERS[@]}; do
     while IFS="," read -r uid lastLoginDate
     do
         sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:delete $uid
+        echo "$uid is deleted"
+        echo "$uid, $lastLoginDate >> $_DIR/reports/users_deleted-$TODAY.csv"
     done < <(tail -n +2 $FILE_DISABLED_USERS)
 done
 
