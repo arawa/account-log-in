@@ -28,14 +28,7 @@ for FILE_DISABLED_USERS in ${FILES_DISABLED_USERS[@]}; do
     echo $FILE_DISABLED_USERS
     while IFS="," read -r uid lastLoginDate
     do
-        # TODO : delete users here with occ cli
-        echo "uid : $uid"
-        echo "last-login-date : $lastLoginDate"
-        echo ""
-        # TODO : Test the next comment
-        # sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:delete $uid
-        # echo "$uid is deleted"
-        # echo "$uid, $lastLoginDate >> $_DIR/reports/users_deleted-$TODAY.csv"
+        sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:delete $uid
     done < <(tail -n +2 $FILE_DISABLED_USERS)
 done
 
