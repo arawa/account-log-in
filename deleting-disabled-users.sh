@@ -38,6 +38,8 @@ for FILE_DISABLED_USERS in ${FILES_DISABLED_USERS[@]}; do
             echo "It's a DATABASE user"
             sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:delete $uid
         fi
+        echo "$uid is deleted"
+        echo "$uid, $lastLoginDate >> $_DIR/reports/users_deleted-$TODAY.csv"
     done < <(tail -n +2 $FILE_DISABLED_USERS)
 done
 
