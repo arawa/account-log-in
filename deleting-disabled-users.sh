@@ -16,7 +16,7 @@ if [[ ! -d $_DIR/reports ]]; then
     exit 1
 fi
 
-FILES_DISABLED_USERS=($(find reports/users_disabled-*.*.csv))
+FILES_DISABLED_USERS=$1
 
 # Build disabled csv file
 TODAY=$(date "+%Y%m%d.%H%M")
@@ -28,7 +28,16 @@ for FILE_DISABLED_USERS in ${FILES_DISABLED_USERS[@]}; do
     echo $FILE_DISABLED_USERS
     while IFS="," read -r uid lastLoginDate
     do
-        sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:delete $uid
+        echo "- UID: $uid"
+        typeConnection=$(sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:info $uid | grep -i backend | awk -F ":" '{print $2}')
+        if [ $typeConnection = "LDAP" ]; then 
+            echo "It's a LDAP user"
+            sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:setting $uid user_ldap isDeleted 1
+            sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:delete $uid
+        else
+            echo "It's a DATABASE user"
+            sudo -u $USER_WEB php $PATH_NEXTCLOUD/occ user:delete $uid
+        fi
         echo "$uid is deleted"
         echo "$uid, $lastLoginDate >> $_DIR/reports/users_deleted-$TODAY.csv"
     done < <(tail -n +2 $FILE_DISABLED_USERS)
